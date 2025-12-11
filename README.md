@@ -8,11 +8,30 @@
 
 主要功能是利用 GLDAS (Global Land Data Assimilation System) 水文模型数据（土壤湿度），计算沿 GRACE-FO 卫星轨道的 视线方向重力差 (Line-of-Sight Gravity Difference, LGD) 模拟值。这可以用于验证 GRACE-FO LRI (Laser Ranging Interferometer) 观测到的高频（亚月级）质量变化信号。
 
+# 2. 环境依赖
 
+本程序基于 Python 3 开发，依赖以下库：
 
-# 2.数据准备
+- Numpy: 数值计算
+- Scipy: 科学计算 (用于勒让德多项式 lpn)
+- NetCDF4: 读取 GLDAS .nc4 文件
+- Matplotlib: 绘图
+- Cartopy: 地图投影与绘制
+- 自定义依赖 (需确保主要脚本同级目录下存在以下模块):
+-- S02compute_grace_lgd: 用于加载卫星轨道 (OrbitLoader)。
+-- S05plot_lgd_ra_cwt_filter: 用于筛选特定区域的轨道 (filter_complete_tracks_passing_region)。
+-- read_love_numbers: 用于读取负荷勒夫数。
 
-## 2.1 **GLDAS 水文数据**
+依赖S02compute_grace_lgd和S05plot_lgd_ra_cwt_filter可到[仓库](https://github.com/SingyuTang/grace_intersatellite_ranging_lgd_processor/tree/master/Scripts_grace_lri1b_lgd_20251111
+)进行下载。
+
+安装基础依赖：
+
+```pip install numpy scipy netCDF4 matplotlib cartopy```
+
+# 3.数据准备
+
+## 3.1 **GLDAS 水文数据**
 
 
 
@@ -24,7 +43,7 @@
 
 ***\*存放结构：\**** 建议按年或月存放，I:\LGD\GLDAS_CLSM025_D_2.2_2020
 
-## 2.2 GRACE-FO轨道数据
+## 3.2 GRACE-FO轨道数据
 
 
 
@@ -34,7 +53,7 @@
 
 
 
-# 3.用户指南
+# 4.用户指南
 
 
 
@@ -46,11 +65,10 @@
 
 
 
-\```
-
+```python
 CONFIG = {
 
-​    \# 路径设置
+​    # 路径设置
 
 ​    'gldas_dir': r"I:\LGD\GLDAS_NOAH025_3H_2.1_2020",
 
@@ -60,7 +78,7 @@ CONFIG = {
 
 
 
-​    \# 背景场设置 (用于计算距平)
+​    # 背景场设置 (用于计算距平)
 
 ​    'bgd_start': '2020-05-01',
 
@@ -68,7 +86,7 @@ CONFIG = {
 
 
 
-​    \# 区域设置
+​    # 区域设置
 
 ​    'region_lon': (88, 92),
 
@@ -78,7 +96,7 @@ CONFIG = {
 
 
 
-​    \# 轨道与计算参数
+​    # 轨道与计算参数
 
 ​    'orbit_direction': 'asc',  # 'asc' or 'desc'
 
@@ -90,7 +108,7 @@ CONFIG = {
 
 
 
-​    \# 绘图参数
+​    # 绘图参数
 
 ​    'results_dir': r"./results_lgd",  # 上一步代码保存结果的文件夹
 
@@ -110,7 +128,8 @@ date_list = [
 
   ]
 
-\```
+```
+
 
 
 
@@ -120,21 +139,21 @@ date_list = [
 
 运行 lgd_processor.py。程序将执行以下操作：
 
-\1. 读取 GLDAS 数据计算月平均背景场。
+1. 读取 GLDAS 数据计算月平均背景场。
 
-\2. 针对 date_list 中的每一天，提取轨道并计算瞬时 LGD。
+2. 针对 date_list 中的每一天，提取轨道并计算瞬时 LGD。
 
-\3. 打印进度并在 output_dir 生成 .npz 文件。
+3. 打印进度并在 output_dir 生成 .npz 文件。
 
 
 
-\```bash
+```bash
 
 
 
 python lgd_processor.py
 
-\```
+```
 
 
 
@@ -146,13 +165,13 @@ python lgd_processor.py
 
 
 
-\```python
+```python
 
 
 
 python lgd_plot.py
 
-\```
+```
 
 
 
@@ -160,7 +179,7 @@ python lgd_plot.py
 
 
 
-# 4.参考文章
+# 5.参考文章
 
 
 
